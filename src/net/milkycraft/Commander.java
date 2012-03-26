@@ -114,12 +114,11 @@ public class Commander implements CommandExecutor
 				+ "BanListing" + ChatColor.BLUE + "=====");
 		if (sender.hasPermission("banlisting.bans"))
 		{
-			sender.sendMessage(ChatColor.GREEN + "/bannedplayers [#]"
-					+ ChatColor.YELLOW + " : Show banned players, alias: "
-					+ ChatColor.AQUA + "/blist");
-			sender.sendMessage(ChatColor.GREEN + "/bannedplayers prev"
+			sender.sendMessage(ChatColor.GREEN + "/bp [#]"
+					+ ChatColor.YELLOW + " : Show banned players");
+			sender.sendMessage(ChatColor.GREEN + "/bp prev"
 					+ ChatColor.YELLOW + " : Show previous page");
-			sender.sendMessage(ChatColor.GREEN + "/bannedplayers next"
+			sender.sendMessage(ChatColor.GREEN + "/bp next"
 					+ ChatColor.YELLOW + " : Show next page");
 		}
 	}

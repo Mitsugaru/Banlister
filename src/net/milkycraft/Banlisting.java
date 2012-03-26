@@ -1,7 +1,5 @@
 package net.milkycraft;
 
-import java.util.logging.Logger;
-
 public class Banlisting extends BanWrapper
 {
 	private bConfiguration configi;

@@ -137,6 +137,7 @@ public class Commander implements CommandExecutor
 		sender.sendMessage(ChatColor.RED + "BanListing v"
 				+ plugin.getDescription().getVersion());
 		sender.sendMessage(ChatColor.GREEN + "Coded by milkywayz");
+		sender.sendMessage(ChatColor.GREEN + "Assisted by Mitsugaru");
 		sender.sendMessage(ChatColor.GREEN + "Formally bobbysmithyy");
 		sender.sendMessage(ChatColor.BLUE + "===========" + ChatColor.GRAY
 				+ "Config" + ChatColor.BLUE + "===========");

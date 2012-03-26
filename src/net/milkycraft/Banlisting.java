@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 public class Banlisting extends BanWrapper
 {
 	private bConfiguration configi;
-	public static final Logger log = Logger.getLogger("Minecraft");
 	public static final String prefix = "[BanListing]";
 
 	@Override
@@ -18,16 +17,13 @@ public class Banlisting extends BanWrapper
 		configi.create();
 		configi.reload();
 		//this.getServer().getPluginManager();
-		//this.getDescription();
+		this.getLogger().info("BanListing v" + this.getDescription().getVersion() + " enabled");
 	}
 
 	@Override
 	public void onDisable()
 	{
-		Logger log = Logger.getLogger("Minecraft");
-		{
-			log.info("Banlisting disabled");
-		}
+		this.getLogger().info("Banlisting disabled");
 	}
 
 	public bConfiguration config()

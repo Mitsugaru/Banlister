@@ -34,21 +34,14 @@ public class Commander implements CommandExecutor
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandlabel, String[] args)
 	{
-		final Player player = (Player) sender;
-		if (!(sender instanceof Player))
-		{
-			//Why? Does it really matter?
-			sender.sendMessage("Sorry but the console cannot use these commands.");
-			return true;
-		}
 		if (args.length == 0 && sender.hasPermission("banlisting.bans"))
 		{
-			listBanned(player, 0);
+			listBanned(sender, 0);
 			try
 			{
 				int pageNum = Integer.parseInt(args[0]);
 				page.put(sender.getName(), pageNum - 1);
-				this.listBanned(player, 0);
+				this.listBanned(sender, 0);
 			}
 			catch (NumberFormatException e)
 			{
@@ -60,12 +53,12 @@ public class Commander implements CommandExecutor
 		{
 			if (args[0].equalsIgnoreCase("help"))
 			{
-				this.displayHelp(player);
+				this.displayHelp(sender);
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("version"))
 			{
-				this.showVersion(player);
+				this.showVersion(sender);
 
 				return true;
 			}
@@ -79,12 +72,12 @@ public class Commander implements CommandExecutor
 			}
 			if (args[0].equalsIgnoreCase("prev"))
 			{
-				this.listBanned(player, -1);
+				this.listBanned(sender, -1);
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("next"))
 			{
-				this.listBanned(player, 1);
+				this.listBanned(sender, 1);
 				return true;
 			}
 			else
@@ -101,7 +94,7 @@ public class Commander implements CommandExecutor
 		}
 	}
 
-	private void displayHelp(Player sender)
+	private void displayHelp(CommandSender sender)
 	{
 		sender.sendMessage(ChatColor.BLUE + "=====" + ChatColor.RED
 				+ "BanListing" + ChatColor.BLUE + "=====");
@@ -124,7 +117,7 @@ public class Commander implements CommandExecutor
 	 *            that sent the message
 	 * @param
 	 */
-	private void showVersion(Player sender)
+	private void showVersion(CommandSender sender)
 	{
 		sender.sendMessage(ChatColor.BLUE + bar + "=====");
 		sender.sendMessage(ChatColor.RED + "BanListing v"
@@ -149,7 +142,7 @@ public class Commander implements CommandExecutor
 	 * @param page
 	 *            adjustment
 	 */
-	private void listBanned(Player player, int pageAdjust)
+	private void listBanned(CommandSender player, int pageAdjust)
 	{
 		// Generate array
 		final OfflinePlayer[] array = Bukkit.getBannedPlayers().toArray(

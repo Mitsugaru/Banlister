@@ -2,7 +2,7 @@ package net.milkycraft;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,7 +10,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class Commander implements CommandExecutor
 {
@@ -39,8 +38,7 @@ public class Commander implements CommandExecutor
 			listBanned(sender, 0);
 			try
 			{
-				int pageNum = Integer.parseInt(args[0]);
-				page.put(sender.getName(), pageNum - 1);
+				page.put(sender.getName(), 0);
 				this.listBanned(sender, 0);
 			}
 			catch (NumberFormatException e)
@@ -82,9 +80,19 @@ public class Commander implements CommandExecutor
 			}
 			else
 			{
-				sender.sendMessage(ChatColor.RED
+				try
+				{
+					int pageNum = Integer.parseInt(args[0]);
+					page.put(sender.getName(), pageNum -1);
+					this.listBanned(sender, 0);
+				}
+				catch (NumberFormatException e)
+				{
+					sender.sendMessage(ChatColor.RED
 						+ " Syntax error make sure you type the command right");
-				return false;
+					return false;
+				}
+				return true;
 			}
 		}
 		else

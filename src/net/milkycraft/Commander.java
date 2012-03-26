@@ -2,7 +2,7 @@ package net.milkycraft;
 
 import java.util.HashMap;
 import java.util.Map;
-//import java.util.logging.Logger;
+// import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,91 +15,97 @@ public class Commander implements CommandExecutor
 {
 	// Class variables
 	private Banlisting plugin;
-	//private BanConfiguration config;
+	// private BanConfiguration config;
 	private final Map<String, Integer> page = new HashMap<String, Integer>();
 	private final static String bar = "======================";
 
-	/*public Commander(Banlisting pb, BanConfiguration c)
-	{
-		plugin = pb;
-		config = c;
-	}*/
+	/*
+	 * public Commander(Banlisting pb, BanConfiguration c) { plugin = pb; config
+	 * = c; }
+	 */
 	public Commander(Banlisting plugin)
 	{
 		this.plugin = plugin;
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd,
+	public boolean onCommand(CommandSender sender, Command command,
 			String commandlabel, String[] args)
 	{
-		if (args.length == 0 && sender.hasPermission("banlisting.bans"))
+		if (args.length == 0)
 		{
-			listBanned(sender, 0);
-			try
+			if (sender.hasPermission("banlisting.bans"))
 			{
 				page.put(sender.getName(), 0);
 				this.listBanned(sender, 0);
-			}
-			catch (NumberFormatException e)
-			{
-				return false;
-			}
-			return true;
-		}
-		else if (sender.hasPermission("banlisting.bans"))
-		{
-			if (args[0].equalsIgnoreCase("help"))
-			{
-				this.displayHelp(sender);
-				return true;
-			}
-			if (args[0].equalsIgnoreCase("version"))
-			{
-				this.showVersion(sender);
-
-				return true;
-			}
-			if (args[0].equalsIgnoreCase("reload"))
-			{
-				plugin.reloadConfig();
-				sender.sendMessage(ChatColor.AQUA + Banlisting.prefix
-						+ ChatColor.GREEN
-						+ " Config has been sucessfully reloaded!");
-				return true;
-			}
-			if (args[0].equalsIgnoreCase("prev"))
-			{
-				this.listBanned(sender, -1);
-				return true;
-			}
-			if (args[0].equalsIgnoreCase("next"))
-			{
-				this.listBanned(sender, 1);
 				return true;
 			}
 			else
 			{
-				try
-				{
-					int pageNum = Integer.parseInt(args[0]);
-					page.put(sender.getName(), pageNum -1);
-					this.listBanned(sender, 0);
-				}
-				catch (NumberFormatException e)
-				{
-					sender.sendMessage(ChatColor.RED
-						+ " Syntax error make sure you type the command right");
-					return false;
-				}
+				sender.sendMessage(ChatColor.RED + Banlisting.prefix
+						+ " Lack Permission: banlisting.bans");
 				return true;
 			}
 		}
 		else
 		{
-			sender.sendMessage(ChatColor.RED + Banlisting.prefix + " Lack Permission: banlisting.bans");
-			return true;
+			final String cmd = args[0];
+			if (sender.hasPermission("banlisting.bans"))
+			{
+				if (cmd.equalsIgnoreCase("help"))
+				{
+					this.displayHelp(sender);
+					return true;
+				}
+				if (cmd.equalsIgnoreCase("version"))
+				{
+					this.showVersion(sender);
+
+					return true;
+				}
+				if (cmd.equalsIgnoreCase("reload"))
+				{
+					plugin.reloadConfig();
+					sender.sendMessage(ChatColor.AQUA + Banlisting.prefix
+							+ ChatColor.GREEN
+							+ " Config has been sucessfully reloaded!");
+					return true;
+				}
+				if (cmd.equalsIgnoreCase("prev"))
+				{
+					this.listBanned(sender, -1);
+					return true;
+				}
+				if (cmd.equalsIgnoreCase("next"))
+				{
+					this.listBanned(sender, 1);
+					return true;
+				}
+				else
+				{
+					try
+					{
+						int pageNum = Integer.parseInt(args[0]);
+						page.put(sender.getName(), pageNum - 1);
+						this.listBanned(sender, 0);
+					}
+					catch (NumberFormatException e)
+					{
+						sender.sendMessage(ChatColor.RED
+								+ " Syntax error make sure you type the command right");
+						return false;
+					}
+					return true;
+				}
+			}
+			else
+			{
+				sender.sendMessage(ChatColor.RED + Banlisting.prefix
+						+ " Lack Permission: banlisting.bans");
+				return true;
+			}
 		}
+
 	}
 
 	private void displayHelp(CommandSender sender)

@@ -1,6 +1,6 @@
 name: BanListing
 main: net.milkycraft.Banlisting
-version: 1.0
+version: 1.1
 website: http://dev.bukkit.org/server-mods/banlisting/
 description: Plugin to list banned players
 author: milkywayz
@@ -20,5 +20,5 @@ permissions:
         description: Allows user view banned list
         default: op
     banlisting.banplayer:
-        description: Allows user ban players
+        description: Allows user to ban players
         default: op

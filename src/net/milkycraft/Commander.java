@@ -12,99 +12,97 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Commander implements CommandExecutor {
+public class Commander implements CommandExecutor
+{
 	// Class variables
 	private Banlisting plugin;
-	private BanConfiguration config;
+	//private BanConfiguration config;
 	private final Map<String, Integer> page = new HashMap<String, Integer>();
 	private final static String bar = "======================";
 
-	public Commander(Banlisting pb, BanConfiguration c) {
+	/*public Commander(Banlisting pb, BanConfiguration c)
+	{
 		plugin = pb;
 		config = c;
+	}*/
+	public Commander(Banlisting plugin)
+	{
+		this.plugin = plugin;
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandlabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd,
+			String commandlabel, String[] args)
+	{
 		final Player player = (Player) sender;
-        if( !(sender instanceof Player))
-        {
-            sender.sendMessage("Sorry but the console cannot use these commands.");
-            return true;
-        }         
-        if (args.length == 0) 
-        {
-        	listBanned(player, 0);
-        			if (plugin.getConfig().getBoolean("limit"))
-    				{
-    					Banlisting.log.info(Banlisting.prefix + " "
-    							+ player.getDisplayName()
-    							+ "has used /bp");
-    				}
-            return true; 
-        }   
-	   if(cmd.getName().equalsIgnoreCase("bannedplayers") && sender.hasPermission("banlisting.bans"))   
-	   {
-       		}
-            if(args[0].equalsIgnoreCase("help"))
-            {
-            	this.displayHelp(player);
-                return true;
-            }
-            if(args[0].equalsIgnoreCase("version"))
-            {
-                this.showVersion(player);
-                
-                return true;
-            }
-            if(args[0].equalsIgnoreCase("reload"))
-            {
-                plugin.reloadConfig();
-                sender.sendMessage(ChatColor.AQUA + Banlisting.prefix
-                		 + ChatColor.GREEN + " Config has been sucessfully reloaded!");
-                return true;                        
-                }
-                if(args[0].equalsIgnoreCase("prev"))
-                {
-                	this.listBanned(player, -1);
-                return true;           
-            }
-            if(args[0].equalsIgnoreCase("next"))
-            {
-            	this.listBanned(player, 1);
-                return true;
-            }         
-            if (args.length == 0) 
-            {
-            	listBanned(player, 0);
-            			if (plugin.getConfig().getBoolean("limit"))
-        				{
-        					Banlisting.log.info(Banlisting.prefix + " "
-        							+ player.getDisplayName()
-        							+ "has used /bp");
-        				}
-            			{
-            				try
-            				{
-            					int pageNum = Integer.parseInt(args[0]);
-            					page.put(sender.getName(), pageNum - 1);
-            					this.listBanned(player, 0);
-            				}
-            				catch (NumberFormatException e)
-            				{
-            					return false;
-            				}
-            			}
-                return true;         
-        }
-            else
-            {            
-            	sender.sendMessage(ChatColor.RED + " Syntax error make sure you type the command right");
-            return false;            
-        }
-    }
+		if (!(sender instanceof Player))
+		{
+			//Why? Does it really matter?
+			sender.sendMessage("Sorry but the console cannot use these commands.");
+			return true;
+		}
+		if (args.length == 0 && sender.hasPermission("banlisting.bans"))
+		{
+			listBanned(player, 0);
+			try
+			{
+				int pageNum = Integer.parseInt(args[0]);
+				page.put(sender.getName(), pageNum - 1);
+				this.listBanned(player, 0);
+			}
+			catch (NumberFormatException e)
+			{
+				return false;
+			}
+			return true;
+		}
+		else if (sender.hasPermission("banlisting.bans"))
+		{
+			if (args[0].equalsIgnoreCase("help"))
+			{
+				this.displayHelp(player);
+				return true;
+			}
+			if (args[0].equalsIgnoreCase("version"))
+			{
+				this.showVersion(player);
 
-	private void displayHelp(Player sender) {
+				return true;
+			}
+			if (args[0].equalsIgnoreCase("reload"))
+			{
+				plugin.reloadConfig();
+				sender.sendMessage(ChatColor.AQUA + Banlisting.prefix
+						+ ChatColor.GREEN
+						+ " Config has been sucessfully reloaded!");
+				return true;
+			}
+			if (args[0].equalsIgnoreCase("prev"))
+			{
+				this.listBanned(player, -1);
+				return true;
+			}
+			if (args[0].equalsIgnoreCase("next"))
+			{
+				this.listBanned(player, 1);
+				return true;
+			}
+			else
+			{
+				sender.sendMessage(ChatColor.RED
+						+ " Syntax error make sure you type the command right");
+				return false;
+			}
+		}
+		else
+		{
+			sender.sendMessage(ChatColor.RED + Banlisting.prefix + " Lack Permission: banlisting.bans");
+			return true;
+		}
+	}
+
+	private void displayHelp(Player sender)
+	{
 		sender.sendMessage(ChatColor.BLUE + "=====" + ChatColor.RED
 				+ "BanListing" + ChatColor.BLUE + "=====");
 		if (sender.hasPermission("banlisting.bans"))
@@ -117,19 +115,17 @@ public class Commander implements CommandExecutor {
 			sender.sendMessage(ChatColor.GREEN + "/bannedplayers next"
 					+ ChatColor.YELLOW + " : Show next page");
 		}
-
-		{
-		}
 	}
 
 	/**
 	 * Shows plugin version and config
-	 *
+	 * 
 	 * @param Player
 	 *            that sent the message
 	 * @param
 	 */
-	private void showVersion(Player sender) {
+	private void showVersion(Player sender)
+	{
 		sender.sendMessage(ChatColor.BLUE + bar + "=====");
 		sender.sendMessage(ChatColor.RED + "BanListing v"
 				+ plugin.getDescription().getVersion());
@@ -137,7 +133,8 @@ public class Commander implements CommandExecutor {
 		sender.sendMessage(ChatColor.GREEN + "Formally bobbysmithyy");
 		sender.sendMessage(ChatColor.BLUE + "===========" + ChatColor.GRAY
 				+ "Config" + ChatColor.BLUE + "===========");
-		sender.sendMessage(ChatColor.GRAY + "Page entry limit: " + plugin.getConfig().getInt("limit"));
+		sender.sendMessage(ChatColor.GRAY + "Page entry limit: "
+				+ plugin.getConfig().getInt("limit"));
 		if (plugin.getConfig().getBoolean("limit"))
 		{
 			sender.sendMessage(ChatColor.GRAY + "Logging enabled");
@@ -146,18 +143,19 @@ public class Commander implements CommandExecutor {
 
 	/**
 	 * Lists banned players in a paginated way
-	 *
+	 * 
 	 * @param player
 	 *            to show list to
 	 * @param page
 	 *            adjustment
 	 */
-	private void listBanned(Player player, int pageAdjust) {
+	private void listBanned(Player player, int pageAdjust)
+	{
 		// Generate array
 		final OfflinePlayer[] array = Bukkit.getBannedPlayers().toArray(
 				new OfflinePlayer[0]);
-		//Add player if they don't exist
-		if(!page.containsKey(player.getName()))
+		// Add player if they don't exist
+		if (!page.containsKey(player.getName()))
 		{
 			page.put(player.getName(), 0);
 		}
@@ -166,8 +164,7 @@ public class Commander implements CommandExecutor {
 			// They already exist, so adjust if necessary
 			if (pageAdjust != 0)
 			{
-				int adj = page.get(player.getName()).intValue()
-						+ pageAdjust;
+				int adj = page.get(player.getName()).intValue() + pageAdjust;
 				page.put(player.getName(), adj);
 			}
 		}
@@ -233,4 +230,3 @@ public class Commander implements CommandExecutor {
 	}
 
 }
-

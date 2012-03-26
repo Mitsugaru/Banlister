@@ -6,4 +6,3 @@
 # logPrefix is part of the message sent to player [BanListing] etc etc etc 
 log: false
 limit: 5
-logPrefix: BanListing

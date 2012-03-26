@@ -12,13 +12,13 @@ public class Banlisting extends BanWrapper
 	public void onEnable()
 	{
 		Commander myGoldExecutor = new Commander(this);
-		getCommand("bannedplayers").setExecutor(myGoldExecutor);
+		getCommand("bp").setExecutor(myGoldExecutor);
 		saveConfig();
 		configi = new bConfiguration(this);
 		configi.create();
 		configi.reload();
-		this.getServer().getPluginManager();
-		this.getDescription();
+		//this.getServer().getPluginManager();
+		//this.getDescription();
 	}
 
 	@Override

@@ -13,19 +13,18 @@ import org.bukkit.command.CommandSender;
 
 public class Commander implements CommandExecutor
 {
-	// Class variables
+	/**
+	 * Class variables
+	 */
 	private Banlisting plugin;
-	// private BanConfiguration config;
+	private Config config;
 	private final Map<String, Integer> page = new HashMap<String, Integer>();
 	private final static String bar = "======================";
 
-	/*
-	 * public Commander(Banlisting pb, BanConfiguration c) { plugin = pb; config
-	 * = c; }
-	 */
 	public Commander(Banlisting plugin)
 	{
 		this.plugin = plugin;
+		config = plugin.getPluginConfig();
 	}
 
 	@Override
@@ -65,7 +64,11 @@ public class Commander implements CommandExecutor
 				}
 				if (cmd.equalsIgnoreCase("reload"))
 				{
-					plugin.reloadConfig();
+					// Instead of calling plugin.reloadConfig(), we tell our
+					// Config class to reload. It does the plugin.reloadConfig()
+					// and other stuff. For more info, check the method reload()
+					// in the Config class.
+					config.reload();
 					sender.sendMessage(ChatColor.AQUA + Banlisting.prefix
 							+ ChatColor.GREEN
 							+ " Config has been sucessfully reloaded!");
@@ -114,12 +117,12 @@ public class Commander implements CommandExecutor
 				+ "BanListing" + ChatColor.BLUE + "=====");
 		if (sender.hasPermission("banlisting.bans"))
 		{
-			sender.sendMessage(ChatColor.GREEN + "/bp [#]"
-					+ ChatColor.YELLOW + " : Show banned players");
-			sender.sendMessage(ChatColor.GREEN + "/bp prev"
-					+ ChatColor.YELLOW + " : Show previous page");
-			sender.sendMessage(ChatColor.GREEN + "/bp next"
-					+ ChatColor.YELLOW + " : Show next page");
+			sender.sendMessage(ChatColor.GREEN + "/bp [#]" + ChatColor.YELLOW
+					+ " : Show banned players");
+			sender.sendMessage(ChatColor.GREEN + "/bp prev" + ChatColor.YELLOW
+					+ " : Show previous page");
+			sender.sendMessage(ChatColor.GREEN + "/bp next" + ChatColor.YELLOW
+					+ " : Show next page");
 		}
 	}
 
@@ -140,9 +143,8 @@ public class Commander implements CommandExecutor
 		sender.sendMessage(ChatColor.GREEN + "Formally bobbysmithyy");
 		sender.sendMessage(ChatColor.BLUE + "===========" + ChatColor.GRAY
 				+ "Config" + ChatColor.BLUE + "===========");
-		sender.sendMessage(ChatColor.GRAY + "Page entry limit: "
-				+ plugin.getConfig().getInt("limit"));
-		if (plugin.getConfig().getBoolean("limit"))
+		sender.sendMessage(ChatColor.GRAY + "Page entry limit: " + config.limit);
+		if (config.log)
 		{
 			sender.sendMessage(ChatColor.GRAY + "Logging enabled");
 		}
@@ -183,7 +185,7 @@ public class Commander implements CommandExecutor
 			return;
 		}
 		boolean valid = true;
-		final int limit = plugin.getConfig().getInt("limit");
+		final int limit = config.limit;
 		// Caluclate amount of pages
 		int num = array.length / limit;
 		final double rem = (double) array.length % (double) limit;

@@ -1,8 +1,0 @@
-# Banlisting v1.0 configuration
-# Plugin originally by bobbysmithyy and Mitsugaru
-# Taken over by milkywayz with permission of them
-# log is if the plugin sends messages to console when someone uses /bannedplayers
-# limit is the limit of pages for the banned players list
-# logPrefix is part of the message sent to player [BanListing] etc etc etc 
-log: false
-limit: 5

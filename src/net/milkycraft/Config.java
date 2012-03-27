@@ -125,7 +125,7 @@ public class Config
 		 */
 		debugTime = config.getBoolean("debugTime", false); //I used to use this to test how long commands took
 		log = config.getBoolean("log", false);
-		limit = config.getInt("entrylimit", 10);
+		limit = config.getInt("limit", 10);
 		/**
 		 * Check bounds of config entries
 		 */

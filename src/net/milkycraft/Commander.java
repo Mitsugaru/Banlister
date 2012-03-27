@@ -134,7 +134,8 @@ public class Commander implements CommandExecutor
 					catch (NumberFormatException e)
 					{
 						//Perhaps they gave a partial name? attempt to search list
-						
+						SearchTask search = new SearchTask(sender, cmd);
+						plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, search);
 						/*sender.sendMessage(ChatColor.RED
 								+ " Syntax error make sure you type the command right");
 						return false;*/
@@ -310,8 +311,8 @@ public class Commander implements CommandExecutor
 			if(!search.isEmpty())
 			{
 				//Attach list to player
-				sender.sendMessage(ChatColor.AQUA + Banlisting.prefix + ChatColor.GREEN + " Found " + ChatColor.BLUE + search.size() + ChatColor.GREEN + " entries for '" + ChatColor.WHITE + "'");
-				sender.sendMessage(ChatColor.GREEN + "Attaching list so that you can page through the search. Detach using: /bp stop");
+				sender.sendMessage(ChatColor.AQUA + Banlisting.prefix + ChatColor.GREEN + " Found " + ChatColor.BLUE + search.size() + ChatColor.GREEN + " entries for '" + ChatColor.WHITE + partialName + ChatColor.GREEN +"'");
+				sender.sendMessage(ChatColor.GREEN + "Attaching list for paging. Detach using: /bp stop");
 				privateSearch.put(sender.getName(), search);
 				//Reset their page and show the first page of list
 				page.put(sender.getName(), 0);

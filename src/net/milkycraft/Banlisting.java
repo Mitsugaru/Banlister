@@ -11,8 +11,6 @@ public class Banlisting extends JavaPlugin
 	private Config config;
 	// Tag for logger
 	public static final String prefix = "[BanListing]";
-	//TODO implement
-	//private McbanFileReader mcban;
 
 	/**
 	 * Enable plugin
@@ -28,7 +26,8 @@ public class Banlisting extends JavaPlugin
 		Commander commander = new Commander(this);
 		// Set Commander to the specific command
 		getCommand("bp").setExecutor(commander);
-		//TODO check if MCBans is enabled. Grab plugin and pass to McbanFileReader
+		//TODO check if MCBans is enabled?
+		//TODO have listener for bans? Update list in Commander on event
 		// Log message that we are now enabled. Give version as well
 		this.getLogger().info(
 				"BanListing v" + this.getDescription().getVersion()

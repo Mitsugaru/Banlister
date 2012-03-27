@@ -140,7 +140,7 @@ public class Commander implements CommandExecutor
 				+ plugin.getDescription().getVersion());
 		sender.sendMessage(ChatColor.GREEN + "Coded by milkywayz");
 		sender.sendMessage(ChatColor.GREEN + "Assisted by Mitsugaru");
-		sender.sendMessage(ChatColor.GREEN + "Formally bobbysmithyy");
+		sender.sendMessage(ChatColor.GREEN + "Originally by bobbysmithyy");
 		sender.sendMessage(ChatColor.BLUE + "===========" + ChatColor.GRAY
 				+ "Config" + ChatColor.BLUE + "===========");
 		sender.sendMessage(ChatColor.GRAY + "Page entry limit: " + config.limit);

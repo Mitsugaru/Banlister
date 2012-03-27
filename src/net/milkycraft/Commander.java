@@ -1,6 +1,8 @@
 package net.milkycraft;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 // import java.util.logging.Logger;
 
@@ -19,12 +21,32 @@ public class Commander implements CommandExecutor
 	private Banlisting plugin;
 	private Config config;
 	private final Map<String, Integer> page = new HashMap<String, Integer>();
+	private final Map<String, List<String>> privateSearch = new HashMap<String, List<String>>();
+	private final List<String> banned = new ArrayList<String>();
 	private final static String bar = "======================";
+	
 
 	public Commander(Banlisting plugin)
 	{
 		this.plugin = plugin;
 		config = plugin.getPluginConfig();
+		/**
+		 * Get banned list and store locally
+		 */
+		// Generate list of local banned players
+		for(OfflinePlayer op : Bukkit.getBannedPlayers())
+		{
+			banned.add(ChatColor.GOLD + op.getName());
+		}
+		//If we are using mcbans, grab and add to list
+		if(config.mcbans)
+		{
+			final McbanFileReader mcban = new McbanFileReader(plugin);
+			for(String player : mcban.getMcbans())
+			{
+				banned.add(ChatColor.BLUE + player);
+			}
+		}
 	}
 
 	@Override
@@ -56,13 +78,13 @@ public class Commander implements CommandExecutor
 					this.displayHelp(sender);
 					return true;
 				}
-				if (cmd.equalsIgnoreCase("version"))
+				else if (cmd.equalsIgnoreCase("version"))
 				{
 					this.showVersion(sender);
 
 					return true;
 				}
-				if (cmd.equalsIgnoreCase("reload"))
+				else if (cmd.equalsIgnoreCase("reload"))
 				{
 					// Instead of calling plugin.reloadConfig(), we tell our
 					// Config class to reload. It does the plugin.reloadConfig()
@@ -74,29 +96,48 @@ public class Commander implements CommandExecutor
 							+ " Config has been sucessfully reloaded!");
 					return true;
 				}
-				if (cmd.equalsIgnoreCase("prev"))
+				else if (cmd.equalsIgnoreCase("prev"))
 				{
 					this.listBanned(sender, -1);
 					return true;
 				}
-				if (cmd.equalsIgnoreCase("next"))
+				else if (cmd.equalsIgnoreCase("next"))
 				{
 					this.listBanned(sender, 1);
+					return true;
+				}
+				else if(cmd.equalsIgnoreCase("end") || cmd.equalsIgnoreCase("stop") || cmd.equalsIgnoreCase("clear"))
+				{
+					if(privateSearch.containsKey(sender.getName()))
+					{
+						privateSearch.remove(sender.getName());
+						sender.sendMessage(ChatColor.AQUA + Banlisting.prefix
+							+ ChatColor.GREEN
+							+ " Custom search cleared.");
+					}
+					else
+					{
+						sender.sendMessage(ChatColor.AQUA + Banlisting.prefix
+								+ ChatColor.YELLOW
+								+ " No custom search attached...");
+					}
 					return true;
 				}
 				else
 				{
 					try
 					{
-						int pageNum = Integer.parseInt(args[0]);
+						int pageNum = Integer.parseInt(cmd);
 						page.put(sender.getName(), pageNum - 1);
 						this.listBanned(sender, 0);
 					}
 					catch (NumberFormatException e)
 					{
-						sender.sendMessage(ChatColor.RED
+						//Perhaps they gave a partial name? attempt to search list
+						
+						/*sender.sendMessage(ChatColor.RED
 								+ " Syntax error make sure you type the command right");
-						return false;
+						return false;*/
 					}
 					return true;
 				}
@@ -160,9 +201,16 @@ public class Commander implements CommandExecutor
 	 */
 	private void listBanned(CommandSender player, int pageAdjust)
 	{
-		// Generate array
-		final OfflinePlayer[] array = Bukkit.getBannedPlayers().toArray(
-				new OfflinePlayer[0]);
+		String[] array = null;
+		//Determine whether they are paging through a search or through the general list
+		if(privateSearch.containsKey(player.getName()))
+		{
+			array = privateSearch.get(player.getName()).toArray(new String[0]);
+		}
+		else
+		{
+			array = banned.toArray(new String[0]);
+		}
 		// Add player if they don't exist
 		if (!page.containsKey(player.getName()))
 		{
@@ -226,14 +274,53 @@ public class Commander implements CommandExecutor
 				// Don't try to pull something beyond the bounds
 				if (i < array.length)
 				{
-					final StringBuilder sb = new StringBuilder();
-					sb.append(ChatColor.AQUA + array[i].getName());
-					player.sendMessage(sb.toString());
+					player.sendMessage(array[i]);
 				}
 				else
 				{
 					break;
 				}
+			}
+		}
+	}
+	
+	public class SearchTask implements Runnable
+	{
+		private CommandSender sender;
+		private String partialName;
+		
+		public SearchTask(CommandSender sender, String partialName)
+		{
+			this.sender = sender;
+			this.partialName = partialName;
+		}
+
+		@Override
+		public void run()
+		{
+			final List<String> search = new ArrayList<String>();
+			for(String s : banned)
+			{
+				if(s.contains(partialName))
+				{
+					//Add all names that have the partial name in some form
+					search.add(s);
+				}
+			}
+			if(!search.isEmpty())
+			{
+				//Attach list to player
+				sender.sendMessage(ChatColor.AQUA + Banlisting.prefix + ChatColor.GREEN + " Found " + ChatColor.BLUE + search.size() + ChatColor.GREEN + " entries for '" + ChatColor.WHITE + "'");
+				sender.sendMessage(ChatColor.GREEN + "Attaching list so that you can page through the search. Detach using: /bp stop");
+				privateSearch.put(sender.getName(), search);
+				//Reset their page and show the first page of list
+				page.put(sender.getName(), 0);
+				listBanned(sender, 0);
+			}
+			else
+			{
+				//No results for the given entry
+				sender.sendMessage(ChatColor.AQUA + Banlisting.prefix + ChatColor.YELLOW + " No names match '" + ChatColor.WHITE + "'");
 			}
 		}
 	}

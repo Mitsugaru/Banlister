@@ -33,7 +33,7 @@ public class Config
 	 */
 	private Banlisting plugin;
 	// public String host, port, database, user, password, tablePrefix;
-	public boolean log, debugTime/*, importSQL, unjailTeleport, removeGroups, useMySQL*/;
+	public boolean log, debugTime, mcbans/*, importSQL, unjailTeleport, removeGroups, useMySQL*/;
 	public int limit;
 
 	/**
@@ -70,6 +70,7 @@ public class Config
 		final Map<String, Object> defaults = new HashMap<String, Object>();
 		defaults.put("log", false);
 		defaults.put("limit", 10);
+		defaults.put("mcbans", false);
 		/*
 		 * TODO these defaults will be added when we do MySQL stuff
 		 * 
@@ -107,29 +108,7 @@ public class Config
 		 * Save config
 		 */
 		plugin.saveConfig();
-		/**
-		 * Load variables from config into the class variables.
-		 * 
-		 * Optimally, you want to include a default value if it is not found.
-		 * Such as for the hidden entry of debugTime, which is not added by
-		 * default but is known by the plugin.
-		 */
-		/*
-		 * TODO to be added later when we do MySQL stuff useMySQL =
-		 * config.getBoolean("mysql.use", false); host =
-		 * config.getString("mysql.host", "localhost"); port =
-		 * config.getString("mysql.port", "3306"); database =
-		 * config.getString("mysql.database", "minecraft"); user =
-		 * config.getString("mysql.user", "user"); password =
-		 * config.getString("mysql.password", "password");
-		 */
-		debugTime = config.getBoolean("debugTime", false); //I used to use this to test how long commands took
-		log = config.getBoolean("log", false);
-		limit = config.getInt("limit", 10);
-		/**
-		 * Check bounds of config entries
-		 */
-		boundsCheck(config);
+		reload();
 	}
 
 	/**
@@ -149,10 +128,24 @@ public class Config
 		ConfigurationSection config = plugin.getConfig();
 		/**
 		 * Load variables from config into the class variables
+		 * 
+		 * Optimally, you want to include a default value if it is not found.
+		 * Such as for the hidden entry of debugTime, which is not added by
+		 * default but is known by the plugin.
+		 */
+		/*
+		 * TODO to be added later when we do MySQL stuff useMySQL =
+		 * config.getBoolean("mysql.use", false); host =
+		 * config.getString("mysql.host", "localhost"); port =
+		 * config.getString("mysql.port", "3306"); database =
+		 * config.getString("mysql.database", "minecraft"); user =
+		 * config.getString("mysql.user", "user"); password =
+		 * config.getString("mysql.password", "password");
 		 */
 		debugTime = config.getBoolean("debugTime", false);
 		log = config.getBoolean("log", false);
 		limit = config.getInt("limit", 10);
+		mcbans = config.getBoolean("mcbans", false);
 		/**
 		 * Check bonds of config entries
 		 */

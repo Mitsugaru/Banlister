@@ -22,6 +22,8 @@ public class Banlisting extends JavaPlugin
 	{
 		// Grab config
 		config = new Config(this);
+		// Check if plugin needs to be updated. Config will update for us.
+		config.checkUpdate();
 		// Create the Commander class to handle commands
 		Commander commander = new Commander(this);
 		// Set Commander to the specific command
